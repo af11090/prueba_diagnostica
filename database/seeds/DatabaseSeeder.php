@@ -1,5 +1,7 @@
 <?php
 
+use App\Area;
+use App\Http\Controllers\TipoContrato;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -11,6 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        $this->call([
+            AreasSeeder::class,
+            TiposContratoSeeder::class,
+            CargosSeeder::class,
+            LocalesSeeder::class,
+            LocalAreaSeeder::class,
+            AreaCargoSeeder::class,
+        ]);
     }
 }
