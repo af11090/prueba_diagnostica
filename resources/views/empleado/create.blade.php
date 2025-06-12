@@ -11,24 +11,24 @@
             <div class="col-md-6">
                 <h3>Datos del Empleado</h3>
                 <div class="form-group">
+                    <label for="dni">DNI</label>
+                    <input type="text" class="form-control" id="dni" name="dni" value="{{'dni' }}" required>
+                </div>
+                <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ old('nombre') }}" required>
+                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{'nombre' }}" required>
                 </div>
                 <div class="form-group">
                     <label for="apellido">Apellido</label>
-                    <input type="text" class="form-control" id="apellido" name="apellido" value="{{ old('apellido') }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="dni">DNI</label>
-                    <input type="text" class="form-control" id="dni" name="dni" value="{{ old('dni') }}" required>
+                    <input type="text" class="form-control" id="apellido" name="apellido" value="{{'apellido' }}" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
+                    <input type="email" class="form-control" id="email" name="email" value="{{'email' }}" required>
                 </div>
                 <div class="form-group">
                     <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-                    <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="{{ old('fecha_nacimiento') }}" required>
+                    <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="{{'fecha_nacimiento' }}" required>
                 </div>
             </div>
 
@@ -85,18 +85,15 @@
 @endsection
 @push('scripts')
 <script>
-console.log('Script cargado');
 $(document).ready(function() {
  $('#local_id').change(function() {
         let localId = $(this).val();
-        console.log('Local seleccionado:', localId);
 
         if(localId) {
             $.ajax({
                 url: `locales/${localId}/areas`,
                 method: 'GET',
                 success: function(areas) {
-                    console.log('Áreas recibidas:', areas);
                     $('#area_id')
                         .prop('disabled', false)
                         .html('<option value="">Seleccione un área</option>');
@@ -107,7 +104,6 @@ $(document).ready(function() {
                 error: function(xhr, status, error) {
                     console.error('Error al cargar áreas:', error);
                     console.log('Respuesta:', xhr.responseText);
-                    alert('Error al cargar las áreas');
                 }
             });
         } else {
@@ -133,13 +129,34 @@ $(document).ready(function() {
                 error: function(xhr, status, error) {
                     console.error('Error al cargar cargos:', error);
                     console.log('Respuesta:', xhr.responseText);
-                    alert('Error al cargar los cargos');
                 }
             });
         } else {
             $('#cargo_id')
                 .prop('disabled', true)
                 .html('<option value="">Primero seleccione un área</option>');
+        }
+    });
+
+    $('#dni').blur(function() {
+        let dni = $(this).val();
+        if (dni.length === 8) {
+            $.ajax({
+                url: `https://dniruc.apisperu.com/api/v1/dni/${dni}?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InhvbWlrNDcxNDFAYWRyZXdpcmUuY29tIn0.k1DVYkHIhPPYcyCtMV-KHNZiDYLTCoPZxTSmqzMmtpg`,
+                method: 'GET',
+                success: function(data) {
+                    if(data.success !== false) {
+                        $('#nombre').val(data.nombres);
+                        $('#apellido').val(data.apellidoPaterno + ' ' + data.apellidoMaterno);
+                    } else {
+                        console.error('DNI no válido o no encontrado');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error al validar DNI:', error);
+                    console.log('Respuesta:', xhr.responseText);
+                }
+            });
         }
     });
 });

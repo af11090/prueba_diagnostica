@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AreaController;
+use App\Http\Controllers\CargoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmpleadoController; // Agrega este use
 
@@ -15,5 +17,5 @@ Route::get('/empleado/{id}/edit', [EmpleadoController::class, 'edit'])->name('em
 Route::put('/empleado/{id}', [EmpleadoController::class, 'update'])->name('empleado.update');
 Route::get('/empleado/{id}', [EmpleadoController::class, 'show'])->name('empleado.show');
 Route::delete('/empleado/{id}', [EmpleadoController::class, 'destroy'])->name('empleado.destroy');
-Route::get('/empleado/locales/{local}/areas', [EmpleadoController::class, 'getAreas']);
-Route::get('/empleado/areas/{area}/cargos', [EmpleadoController::class, 'getCargos']);
+Route::get('/empleado/locales/{local}/areas', [AreaController::class, 'getAreas']);
+Route::get('/empleado/areas/{area}/cargos', [CargoController::class, 'getCargos']);
