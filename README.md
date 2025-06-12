@@ -21,11 +21,12 @@ Sistema web para la gestión de empleados y recursos humanos desarrollado con La
 1. Clonar el repositorio
 configurar la base de datos
 2. Los datos de prueba de las demas tablas se encuentran en seed y migración.
-3. Ejecutar `composer intall`
-4. Copiar `.env.example` a `.env` y configurar la base de datos
-5. Genear la clave del proyecto `php artisan key:generate`
-6. Ejecutar `php artisan migrate --seed`
-7. Ejecutar `php artisan serve`
+3. Ya esta compilado el framework de boostrapp no se necesita ejecutar otros comandos.
+4. Ejecutar `composer intall`
+5. Copiar `.env.example` a `.env` y configurar la base de datos
+6. Genear la clave del proyecto `php artisan key:generate`
+7. Ejecutar `php artisan migrate --seed`
+8. Ejecutar `php artisan serve`
 
 # Estructura del Proyecto
 
