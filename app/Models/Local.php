@@ -16,7 +16,12 @@ class Local extends Model
     // Relación de muchos a muchos con áreas
     public function areas()
     {
-        return $this->belongsToMany(Area::class, 'area_local', 'id_local', 'id_area');
+        return $this->belongsToMany(Area::class, 'local_area', 'id_local', 'id_area');
+    }
+    //Relación de uno a uno con Contrato
+    public function contrato()
+    {
+        return $this->hasOne(Contrato::class, 'id_local');
     }
 
 }

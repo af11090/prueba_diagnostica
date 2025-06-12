@@ -22,4 +22,9 @@ class Area extends Model
     {
         return $this->belongsToMany(Local::class, 'area_local', 'id_area', 'id_local');
     }
+    // Relación de uno a uno con Contrato
+    public function contrato()
+    {
+        return $this->hasOne(Contrato::class, 'id_area');
+    }
 }

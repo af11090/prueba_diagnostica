@@ -18,4 +18,10 @@ class Cargo extends Model
     {
         return $this->belongsToMany(Area::class, 'area_cargo', 'id_cargo', 'id_area');
     }
+    //Relación de uno a uno con Contrato
+    public function contrato()
+    {
+        return $this->hasOne(Contrato::class, 'id_cargo', 'id');
+    }
+
 }

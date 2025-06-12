@@ -12,9 +12,11 @@ class Contrato extends Model
     protected $fillable = [
         'id_empleado',
         'id_tipo_contrato',
+        'id_cargo',
+        'id_area',
+        'id_local',
         'fecha_inicio',
         'fecha_fin',
-        'estado',
     ];
     protected $casts = [
         'fecha_inicio' => 'date',
@@ -29,5 +31,20 @@ class Contrato extends Model
     public function tipoContrato()
     {
         return $this->belongsTo(TipoContrato::class, 'id_tipo_contrato');
+    }
+    //Relación de uno a uno con Cargo
+    public function cargo()
+    {
+        return $this->hasOne(Cargo::class, 'id_cargo');
+    }
+    //Relación de uno a uno con Area
+    public function area()
+    {
+        return $this->hasOne(Area::class, 'id_area');
+    }
+    // Relación de uno a uno con Local
+    public function local()
+    {
+        return $this->hasOne(Local::class, 'id_local');
     }
 }

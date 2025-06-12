@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TipoContrato extends Model
 {
-    protected $table = 'tipo_contratos';
+    protected $table = 'tipos_contrato';
     protected $primaryKey = 'id';
     protected $fillable = [
         'nombre',
