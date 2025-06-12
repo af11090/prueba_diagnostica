@@ -20,7 +20,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-              <a class="navbar-brand" href="#">
+              <a class="navbar-brand" href="/">
                 <img src="{{ asset('image/logo.png')}}"
                     class="d-inline-block logo" alt="logo">
                  <p class="d-inline-block font-weight-bold">SOFTWARE</p>
@@ -29,20 +29,16 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav mr-auto ">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/">Home </span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('empleado.index')}}">Empleados</a>
+                        <a class="nav-link" href="{{route('empleado.index')}}">Empleados </a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+
             </div>
         </nav>
         <hr>
@@ -50,8 +46,10 @@
     <main>
         @yield('content')
     </main>
-    <footer>
-        <p>&copy; {{ date('Y') }} My Website</p>
+    <footer class="text-center mt-4">
+        <hr>
+    <p>Desarrollado por <a href="https://github.com/af11090">Antony Fernando</a></p>
+        <p>&copy; {{ date('Y') }} RH Software</p>
     </footer>
     <script src="{{ asset('js/app.js') }}"></script>
 

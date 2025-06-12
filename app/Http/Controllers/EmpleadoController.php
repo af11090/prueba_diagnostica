@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Cargo;
 use App\Models\Contrato;
 use App\Models\Empleado;
 use App\Models\Local;
@@ -15,10 +16,57 @@ class EmpleadoController extends Controller
 {
     public function index(Request $request)
     {
-        $empleados = Empleado::all(); // Aquí puedes obtener los empleados de la base de datos
+        $query = Empleado::query();
 
-        return view('empleado.index', compact('empleados'));
+        // Filtros por datos personales
+        // if ($request->filled('buscar')) {
+        //     $buscar = $request->input('buscar');
+        //     $query->where(function($q) use ($buscar) {
+        //         $q->where('nombre', 'like', "%$buscar%")
+        //         ->orWhere('apellido', 'like', "%$buscar%")
+        //         ->orWhere('dni', 'like', "%$buscar%")
+        //         ->orWhere('email', 'like', "%$buscar%");
+        //     });
+        // }
+
+        // Filtros por datos empresariales
+        // 1. Filtro por el area
+        if ($request->filled('area_id')) {
+            $query->whereHas('contratos', function ($q) use ($request) {
+                $q->where('id_area', $request->area_id);
+            });
+        }
+
+        // 2. Filtro por cargo
+        if ($request->filled('cargo_id')) {
+            $query->whereHas('contratos', function($q) use ($request) {
+                $q->where('id_cargo', $request->cargo_id);
+            });
+        }
+
+        // 3. Filtro por local
+        if ($request->filled('local_id')) {
+            $query->whereHas('contratos', function($q) use ($request) {
+                $q->where('id_local', $request->local_id);
+            });
+        }
+
+        // 4. Filtro por rango de fecha de contratación
+        if ($request->filled('fecha_inicio') && $request->filled('fecha_fin')) {
+            $query->whereHas('contratos', function($q) use ($request) {
+                $q->whereBetween('fecha_inicio', [$request->fecha_inicio, $request->fecha_fin]);
+            });
+        }
+
+        $empleados = $query->paginate(5)->appends($request->all());
+        // Obtener los datos necesarios para los filtros
+        $locales = Local::all();
+        $areas = Area::all();
+        $cargos = Cargo::all();
+        $tiposContrato = TipoContrato::all();
+        return view('empleado.index', compact('empleados', 'locales', 'areas', 'cargos', 'tiposContrato'));
     }
+
     public function create()
     {
         $locales = Local::all();
