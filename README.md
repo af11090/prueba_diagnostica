@@ -23,8 +23,9 @@ configurar la base de datos
 2. Los datos de prueba de las demas tablas se encuentran en seed.
 3. Ejecutar `composer intall`
 4. Copiar `.env.example` a `.env` y configurar la base de datos
-5. Ejecutar `php artisan migrate --seed`
-6. Ejecutar `php artisan serve`
+5. Genear la clave del proyecto `php artisan key:generate`
+6. Ejecutar `php artisan migrate --seed`
+7. Ejecutar `php artisan serve`
 
 # Estructura del Proyecto
 
