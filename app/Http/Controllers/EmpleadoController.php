@@ -19,6 +19,12 @@ class EmpleadoController extends Controller
     {
         $query = Empleado::query();
 
+        // Filtrar para excluir empleados inactivos
+        $query->where(function($q) {
+            $q->where('estado', '!=', 'inactivo')
+            ->orWhereNull('estado');
+        });
+
         // Filtros por datos empresariales
         // 1. Filtro por el area
         if ($request->filled('area_id')) {
@@ -72,6 +78,7 @@ class EmpleadoController extends Controller
         $data = $request->validate([
             'nombre' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
             'apellido' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
+            // Se valida que el DNI sea un número de 8 dígitos y único en la tabla empleados
             'dni' => ['required', 'regex:/^[0-9]{8}$/', 'unique:empleados,dni'],
             'email' => 'required|email|max:100|unique:empleados,email',
             'fecha_nacimiento' => ['required','date','before:today','before:' . now()->subYears(18)->format('Y-m-d')],
@@ -101,6 +108,8 @@ class EmpleadoController extends Controller
             'id_cargo' => 'required|exists:cargos,id',
             'id_area' => 'required|exists:areas,id',
             'id_local' => 'required|exists:locales,id',
+            // Se valida que la fecha de inicio sea una fecha válida, no futura y antes o igual a la fecha de fin
+            // Se valida que la fecha de fin sea una fecha válida y posterior a la fecha de inicio
             'fecha_inicio' => 'required|date|before_or_equal:fecha_fin|before_or_equal:today',
             'fecha_fin' => 'nullable|date|after:fecha_inicio',
         ],
@@ -149,7 +158,9 @@ class EmpleadoController extends Controller
         $data = $request->validate([
             'nombre' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
             'apellido' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
-            'email' => 'required|email|max:100|unique:empleados,email',
+            //Se ignora el DNI del empleado al actualizar
+            //se valida que el email sea único excepto el del empleado que se está actualizando
+            'email' => 'required|email|max:100|unique:empleados,email,'.$id,
             'fecha_nacimiento' => ['required','date','before:today','before:' . now()->subYears(18)->format('Y-m-d')],
         ],
         [
@@ -167,8 +178,9 @@ class EmpleadoController extends Controller
         ]);
         try {
             DB::beginTransaction();
+            Log::info('DATOS DE EMPLEADO: ', $data);
             $empleado->update($data);
-
+            DB::commit();
             return redirect()->route('empleado.index')->with('success', 'Empleado actualizado exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();

@@ -14,6 +14,7 @@ class Empleado extends Model
         'dni',
         'email',
         'fecha_nacimiento',
+        'estado'
     ];
     protected $casts = [
         'fecha_nacimiento' => 'date',
