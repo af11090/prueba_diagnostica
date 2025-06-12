@@ -19,3 +19,4 @@ Route::get('/empleado/{id}', [EmpleadoController::class, 'show'])->name('emplead
 Route::delete('/empleado/{id}', [EmpleadoController::class, 'destroy'])->name('empleado.destroy');
 Route::get('/empleado/locales/{local}/areas', [AreaController::class, 'getAreas']);
 Route::get('/empleado/areas/{area}/cargos', [CargoController::class, 'getCargos']);
+Route::put('/empleado/{id}/baja', [EmpleadoController::class, 'baja'])->name('empleado.baja');

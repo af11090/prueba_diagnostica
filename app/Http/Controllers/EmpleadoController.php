@@ -27,56 +27,62 @@ class EmpleadoController extends Controller
     }
     public function store(Request $request)
     {
-        // $data = $request->validate([
-        //     'nombre' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
-        //     'apellido' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
-        //     'dni' => ['required', 'regex:/^[0-9]{8}$/', 'unique:empleados,dni'],
-        //     'email' => 'required|email|max:100|unique:empleados,email',
-        //     'fecha_nacimiento' => [
-        //         'required',
-        //         'date',
-        //         'before:today',
-        //         'before:' . now()->subYears(18)->format('Y-m-d'),
-        //     ],
-        // ],
-        // [
-        //     'nombre.required' => 'El nombre es obligatorio.',
-        //     'apellido.required' => 'El apellido es obligatorio.',
-        //     'dni.required' => 'El DNI es obligatorio.',
-        //     'fecha_nacimiento.before' => 'La fecha de nacimiento no puede ser una fecha futura.',
-        //     'email.required' => 'El correo electrónico es obligatorio.',
-        //     'fecha_nacimiento.before' => 'Debe ser mayor de 18 años.',
-        //     'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
-        //     'dni.max' => 'El DNI no puede tener más de 8 caracteres.',
-        //     'email.max' => 'El correo electrónico no puede tener más de 100 caracteres.',
-        //     'dni.string' => 'El DNI debe ser una cadena de texto.',
-        //     'email.email' => 'El formato del correo electrónico es inválido.',
-        //     'fecha_nacimiento.date' => 'La fecha de nacimiento debe ser una fecha válida.',
-        //     'dni.unique' => 'El DNI ya está registrado.',
-        //     'email.unique' => 'El correo electrónico ya está registrado.',
-        // ]);
-        $data = $request->only(['nombre', 'apellido', 'dni', 'email', 'fecha_nacimiento']);
+        $data = $request->validate([
+            'nombre' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
+            'apellido' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
+            'dni' => ['required', 'regex:/^[0-9]{8}$/', 'unique:empleados,dni'],
+            'email' => 'required|email|max:100|unique:empleados,email',
+            'fecha_nacimiento' => ['required','date','before:today','before:' . now()->subYears(18)->format('Y-m-d')],
+        ],
+        [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.string' => 'El nombre debe ser una cadena de texto.',
+            'apellido.required' => 'El apellido es obligatorio.',
+            'apellido.string' => 'El apellido debe ser una cadena de texto.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.max' => 'El DNI no puede tener más de 8 caracteres.',
+            'fecha_nacimiento.before' => 'La fecha de nacimiento no puede ser una fecha futura.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'fecha_nacimiento.before' => 'Debe ser mayor de 18 años.',
+            'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
+            'dni.max' => 'El DNI no puede tener más de 8 caracteres.',
+            'dni.string' => 'El DNI debe ser una cadena de texto.',
+            'email.email' => 'El formato del correo electrónico es inválido.',
+            'fecha_nacimiento.date' => 'La fecha de nacimiento debe ser una fecha válida.',
+            'dni.unique' => 'El DNI ya está registrado.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+        ]);
+
+        $dataContrato = $request->validate([
+            'id_tipo_contrato' => 'required|exists:tipos_contrato,id',
+            'id_cargo' => 'required|exists:cargos,id',
+            'id_area' => 'required|exists:areas,id',
+            'id_local' => 'required|exists:locales,id',
+            'fecha_inicio' => 'required|date|before_or_equal:fecha_fin|before_or_equal:today',
+            'fecha_fin' => 'nullable|date|after:fecha_inicio',
+        ],
+        [
+            'id_tipo_contrato.required' => 'El tipo de contrato es obligatorio.',
+            'id_tipo_contrato.exists' => 'El tipo de contrato seleccionado no es válido.',
+            'id_cargo.required' => 'El cargo es obligatorio.',
+            'id_cargo.exists' => 'El cargo seleccionado no es válido.',
+            'id_area.required' => 'El área es obligatoria.',
+            'id_area.exists' => 'El área seleccionada no es válida.',
+            'id_local.required' => 'El local es obligatorio.',
+            'id_local.exists' => 'El local seleccionado no es válido.',
+            'fecha_inicio.required' => 'La fecha de inicio es obligatoria.',
+            'fecha_inicio.date' => 'La fecha de inicio debe ser una fecha válida.',
+            'fecha_fin.date' => 'La fecha de fin debe ser una fecha válida.',
+            'fecha_fin.after' => 'La fecha de fin debe ser posterior a la fecha de inicio.',
+        ]);
+
+        // $data = $request->only(['nombre', 'apellido', 'dni', 'email', 'fecha_nacimiento']);
         try{
             DB::beginTransaction();
             $empleado = Empleado::create($data);
-            Log::info('Empleado creado: ' . $empleado->id, $data);
-               Log::info('Contrato creado para empleado: ' . $empleado->id, [
-                'tipo_contrato_id' => $request->tipo_contrato_id,
-                'cargo_id' => $request->cargo_id,
-                'area_id' => $request->area_id,
-                'local_id' => $request->local_id,
-                'fecha_inicio' => $request->fecha_inicio,
-                'fecha_fin' => $request->fecha_fin,
-            ]);
-            Contrato::create([
-                'id_empleado' => $empleado->id,
-                'id_tipo_contrato' => $request->tipo_contrato_id,
-                'id_cargo' => $request->cargo_id,
-                'id_area' => $request->area_id,
-                'id_local' => $request->local_id,
-                'fecha_inicio' => $request->fecha_inicio,
-                'fecha_fin' => $request->fecha_fin,
-            ]);
+            $dataContrato['id_empleado'] = $empleado->id;
+            Log::info('DATOS DE CONTRATO: ', $dataContrato);
+            Contrato::create($dataContrato);
             DB::commit();
             return redirect()->route('empleado.index')->with('success', 'Empleado creado exitosamente.');
         }catch(\Exception $e){
@@ -88,19 +94,31 @@ class EmpleadoController extends Controller
     public function edit($id)
     {
         $empleado = Empleado::findOrFail($id);
-        return view('empleado.edit', compact('empleado'));
+        $contrato = $empleado->contrato;
+        return view('empleado.edit', compact('empleado', 'contrato'));
     }
     public function update(Request $request, $id)
     {
 
         $empleado = Empleado::findOrFail($id);
-
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'dni' => 'required|string|max:20|unique:empleados,dni,' . $empleado->id,
-            'email' => 'required|email|max:255|unique:empleados,email,' . $empleado->id,
-            'fecha_nacimiento' => 'required|date',
+            'nombre' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
+            'apellido' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
+            'email' => 'required|email|max:100|unique:empleados,email',
+            'fecha_nacimiento' => ['required','date','before:today','before:' . now()->subYears(18)->format('Y-m-d')],
+        ],
+        [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.string' => 'El nombre debe ser una cadena de texto.',
+            'apellido.required' => 'El apellido es obligatorio.',
+            'apellido.string' => 'El apellido debe ser una cadena de texto.',
+            'fecha_nacimiento.before' => 'La fecha de nacimiento no puede ser una fecha futura.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'fecha_nacimiento.before' => 'Debe ser mayor de 18 años.',
+            'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
+            'email.email' => 'El formato del correo electrónico es inválido.',
+            'fecha_nacimiento.date' => 'La fecha de nacimiento debe ser una fecha válida.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
         ]);
 
         $empleado->update($data);
@@ -110,6 +128,7 @@ class EmpleadoController extends Controller
     public function destroy($id)
     {
         $empleado = Empleado::findOrFail($id);
+        $empleado->contratos()->delete();
         $empleado->delete();
 
         return redirect()->route('empleado.index')->with('success', 'Empleado eliminado exitosamente.');
@@ -119,6 +138,11 @@ class EmpleadoController extends Controller
         $empleado = Empleado::findOrFail($id);
         return view('empleado.show', compact('empleado'));
     }
-
-
+    public function baja($id)
+    {
+        $empleado = Empleado::findOrFail($id);
+        $empleado->estado = 'inactivo';
+        $empleado->save();
+        return redirect()->route('empleado.index')->with('success', 'Empleado dado de baja correctamente.');
+    }
 }
