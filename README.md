@@ -56,4 +56,6 @@ Index de la página.
 
 ### Otros
 - Se uso una API gratuita para obtener los nombres de https://apisperu.com/
+- Diagrama de base de datos
+  https://github.com/af11090/prueba_diagnostica/blob/main/database/Diagram_DB.png
 ##### No se uso plugins
