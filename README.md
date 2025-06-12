@@ -20,7 +20,7 @@ Sistema web para la gestión de empleados y recursos humanos desarrollado con La
 ## Instalación
 1. Clonar el repositorio
 configurar la base de datos
-2. Los datos de prueba de las demas tablas se encuentran en seed.
+2. Los datos de prueba de las demas tablas se encuentran en seed y migración.
 3. Ejecutar `composer intall`
 4. Copiar `.env.example` a `.env` y configurar la base de datos
 5. Genear la clave del proyecto `php artisan key:generate`
