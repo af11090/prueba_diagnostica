@@ -7,7 +7,6 @@
     <div class="card mb-3">
         <div class="card-body">
             <h5 class="card-title">Información del Empleado</h5>
-            <p><strong>ID:</strong> {{ $empleado->id }}</p>
             <p><strong>Nombre:</strong> {{ $empleado->nombre }}</p>
             <p><strong>Apellido:</strong> {{ $empleado->apellido }}</p>
             <p><strong>DNI:</strong> {{ $empleado->dni }}</p>
