@@ -21,8 +21,9 @@ Sistema web para la gestión de empleados y recursos humanos desarrollado con La
 1. Clonar el repositorio
 configurar la base de datos
 2. Los datos de prueba de las demas tablas se encuentran en seed.
-3. Ejecutar `php artisan migrate --seed`
-4. Ejecutar `php artisan serve`
+3. Ejecutar `composer intall`
+4. Ejecutar `php artisan migrate --seed`
+5. Ejecutar `php artisan serve`
 
 # Estructura del Proyecto
 
