@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
+    // Seeder para la base de datos
+    // Este seeder llama a otros seeders para poblar las tablas de la base de datos
     public function run()
     {
         $this->call([

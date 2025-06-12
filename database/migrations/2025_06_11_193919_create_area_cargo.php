@@ -13,6 +13,7 @@ class CreateAreaCargo extends Migration
      */
     public function up()
     {
+        // Creación de la tabla area_cargo
         Schema::create('area_cargo', function (Blueprint $table) {
             $table->foreignId('id_area')->constrained('areas');
             $table->foreignId('id_cargo')->constrained('cargos');

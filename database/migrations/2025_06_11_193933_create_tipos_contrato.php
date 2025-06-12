@@ -13,6 +13,7 @@ class CreateTiposContrato extends Migration
      */
     public function up()
     {
+        // Creación de la tabla tipos_contrato
         Schema::create('tipos_contrato', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 50)->unique();

@@ -11,6 +11,7 @@
     <meta name="author" content="Antony Fernando">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    {{-- Se agrego un yield para el título --}}
     <title>@yield('title')</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -44,6 +45,7 @@
         <hr>
     </header>
     <main>
+        {{-- Se agrego un yield para el contenido principal y todo lo demas de la plantilla sea usado en otra vista --}}
         @yield('content')
     </main>
     <footer class="text-center mt-4">

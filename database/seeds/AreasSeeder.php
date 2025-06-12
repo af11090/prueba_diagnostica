@@ -10,6 +10,7 @@ class AreasSeeder extends Seeder
      *
      * @return void
      */
+    //Seeder para la tabla areas
     public function run()
     {
         DB::table('areas')->insert([

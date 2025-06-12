@@ -10,6 +10,7 @@ class LocalesSeeder extends Seeder
      *
      * @return void
      */
+// Seeder para la tabla locales
     public function run()
     {
         DB::table('locales')->insert([

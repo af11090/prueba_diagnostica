@@ -10,6 +10,8 @@ class AreaCargoSeeder extends Seeder
      *
      * @return void
      */
+    // Seeder para la tabla area_cargo
+    // Este seeder inserta datos de ejemplo en la tabla area_cargo
     public function run()
     {
         DB::table('area_cargo')->insert([

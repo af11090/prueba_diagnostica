@@ -13,9 +13,6 @@
         <!-- Formulario de filtros -->
         <form method="GET" action="{{ route('empleado.index') }}" class="mb-4">
             <div class="row">
-                {{-- <div class="col-md-3">
-                    <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre, apellido, DNI, email" value="{{ request('buscar') }}">
-                </div> --}}
                 <div class="col-md-2">
                     <select name="area_id" class="form-control">
                         <option value="">-- Área --</option>

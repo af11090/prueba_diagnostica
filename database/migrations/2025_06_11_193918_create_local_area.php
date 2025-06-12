@@ -13,6 +13,7 @@ class CreateLocalArea extends Migration
      */
     public function up()
     {
+        // Creación de la tabla local_area
         Schema::create('local_area', function (Blueprint $table) {
             $table->foreignId('id_local')->constrained('locales');
             $table->foreignId('id_area')->constrained('areas');

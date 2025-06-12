@@ -13,6 +13,7 @@ class CreateAreas extends Migration
      */
     public function up()
     {
+        //Creación de la tabla areas
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 50)->unique();

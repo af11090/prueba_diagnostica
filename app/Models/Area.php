@@ -18,6 +18,7 @@ class Area extends Model
     {
         return $this->belongsToMany(Cargo::class, 'area_cargo', 'id_area', 'id_cargo');
     }
+    // Relación de muchos a muchos con Local
     public function locales()
     {
         return $this->belongsToMany(Local::class, 'area_local', 'id_area', 'id_local');

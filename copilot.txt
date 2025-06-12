@@ -1,2 +1,0 @@
-La apliación esta usando laravel 7 y php 7.3
-Se usará solo bostrap de framework.

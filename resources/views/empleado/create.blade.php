@@ -7,7 +7,7 @@
     <form action="{{ route('empleado.store') }}" method="POST">
         @csrf
         <div class="row">
-            <!-- Columna izquierda - Datos del empleado -->
+
             <div class="col-md-6">
                 <h3>Datos del Empleado</h3>
                 <div class="form-group">
@@ -57,7 +57,6 @@
                 </div>
             </div>
 
-            <!-- Columna derecha - Datos del contrato -->
             <div class="col-md-6">
                 <h3>Datos del Contrato</h3>
                 <div class="form-group">
@@ -143,13 +142,16 @@
 $(document).ready(function() {
     $('#id_local').change(function() {
         let localId = $(this).val();
-
+        // Según el id del local seleccionado, se cargan las áreas correspondientes
         if(localId) {
+            // Hacemos una petición AJAX para obtener las áreas del local seleccionado
             $.ajax({
                 url: `locales/${localId}/areas`,
                 method: 'GET',
+                // Si la petición es exitosa, se cargan las áreas en el select
                 success: function(areas) {
                     $('#id_area')
+                         // Habilitamos el select de áreas y limpiamos las opciones
                         .prop('disabled', false)
                         .html('<option value="">Seleccione un área</option>');
                     areas.forEach(area => {
@@ -162,6 +164,7 @@ $(document).ready(function() {
                 }
             });
         } else {
+            // Si no se selecciona un local, deshabilitamos el select de áreas y limpiamos las opciones
             $('#id_area')
                 .prop('disabled', true)
                 .html('<option value="">Primero seleccione un local</option>');
@@ -170,10 +173,13 @@ $(document).ready(function() {
 
     $('#id_area').change(function() {
         let areaId = $(this).val();
+        // Según el id del área seleccionada, se cargan los cargos correspondientes
+        // Hacemos una petición AJAX para obtener los cargos del área seleccionada
         if(areaId) {
             $.ajax({
                 url: `areas/${areaId}/cargos`,
                 method: 'GET',
+                // Si la petición es exitosa, se cargan los cargos en el select
                 success: function(cargos) {
                     $('#id_cargo').prop('disabled', false)
                                 .html('<option value="">Seleccione un cargo</option>');
@@ -187,6 +193,7 @@ $(document).ready(function() {
                 }
             });
         } else {
+            // Si no se selecciona un área, deshabilitamos el select de cargos y limpiamos las opciones
             $('#id_cargo')
                 .prop('disabled', true)
                 .html('<option value="">Primero seleccione un área</option>');
@@ -195,21 +202,29 @@ $(document).ready(function() {
 
     $('#dni').blur(function() {
         let dni = $(this).val();
+        // Validamos que el DNI tenga 8 dígitos
         if (dni.length === 8) {
+            // Hacemos una petición AJAX para validar el DNI
+            // Aquí se usó la Api gratuita para validar el dni,
+            // por motivos de la prueba diagnostica use la url directamente lo cual no debería de
+            // hacerse asi ya en un entorno real.
             $.ajax({
                 url: `https://dniruc.apisperu.com/api/v1/dni/${dni}?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InhvbWlrNDcxNDFAYWRyZXdpcmUuY29tIn0.k1DVYkHIhPPYcyCtMV-KHNZiDYLTCoPZxTSmqzMmtpg`,
                 method: 'GET',
                 success: function(data) {
                     if(data.success !== false) {
+                        // Si el DNI es válido, llenamos los campos de nombre y apellido y hacemos que no sean editables
                         $('#nombre').val(data.nombres).prop('readonly', true);
                         $('#apellido').val(data.apellidoPaterno + ' ' + data.apellidoMaterno).prop('readonly', true);
                     } else {
+                        // Si el DNI no es válido, limpiamos los campos y los hacemos editables
                         $('#nombre').val('').prop('readonly', false);
                         $('#apellido').val('').prop('readonly', false);
                         console.error('DNI no válido o no encontrado');
                     }
                 },
                 error: function(xhr, status, error) {
+                    // Si hay un error en la petición, limpiamos los campos y los hacemos editables
                     $('#nombre').val('').prop('readonly', false);
                     $('#apellido').val('').prop('readonly', false);
                     console.error('Error al validar DNI:', error);
@@ -217,6 +232,7 @@ $(document).ready(function() {
                 }
             });
         } else {
+            // Si el DNI no tiene 8 dígitos, limpiamos los campos y los hacemos editables
             $('#nombre').prop('readonly', false);
             $('#apellido').prop('readonly', false);
         }

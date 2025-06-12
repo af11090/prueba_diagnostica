@@ -11,23 +11,13 @@ use App\Models\TipoContrato;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use PhpParser\Node\Stmt\TryCatch;
 
 class EmpleadoController extends Controller
 {
     public function index(Request $request)
     {
         $query = Empleado::query();
-
-        // Filtros por datos personales
-        // if ($request->filled('buscar')) {
-        //     $buscar = $request->input('buscar');
-        //     $query->where(function($q) use ($buscar) {
-        //         $q->where('nombre', 'like', "%$buscar%")
-        //         ->orWhere('apellido', 'like', "%$buscar%")
-        //         ->orWhere('dni', 'like', "%$buscar%")
-        //         ->orWhere('email', 'like', "%$buscar%");
-        //     });
-        // }
 
         // Filtros por datos empresariales
         // 1. Filtro por el area
@@ -58,7 +48,9 @@ class EmpleadoController extends Controller
             });
         }
 
+        //Inclusión de paginador
         $empleados = $query->paginate(5)->appends($request->all());
+
         // Obtener los datos necesarios para los filtros
         $locales = Local::all();
         $areas = Area::all();
@@ -69,12 +61,14 @@ class EmpleadoController extends Controller
 
     public function create()
     {
+        // Obtener los datos necesarios para el formulario de creación
         $locales = Local::all();
         $tiposContrato = TipoContrato::all();
         return view('empleado.create', compact('locales', 'tiposContrato'));
     }
     public function store(Request $request)
     {
+        // Validación de los datos del empleado
         $data = $request->validate([
             'nombre' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
             'apellido' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
@@ -101,6 +95,7 @@ class EmpleadoController extends Controller
             'email.unique' => 'El correo electrónico ya está registrado.',
         ]);
 
+        // Validación de los datos del contrato
         $dataContrato = $request->validate([
             'id_tipo_contrato' => 'required|exists:tipos_contrato,id',
             'id_cargo' => 'required|exists:cargos,id',
@@ -124,10 +119,11 @@ class EmpleadoController extends Controller
             'fecha_fin.after' => 'La fecha de fin debe ser posterior a la fecha de inicio.',
         ]);
 
-        // $data = $request->only(['nombre', 'apellido', 'dni', 'email', 'fecha_nacimiento']);
+        // Se agrego un try-catch y una transacción para manejar errores al crear el empleado y el contrato
         try{
             DB::beginTransaction();
             $empleado = Empleado::create($data);
+            //Se agrega el id del empleado al contrato
             $dataContrato['id_empleado'] = $empleado->id;
             Log::info('DATOS DE CONTRATO: ', $dataContrato);
             Contrato::create($dataContrato);
@@ -141,13 +137,14 @@ class EmpleadoController extends Controller
     }
     public function edit($id)
     {
+        // Datos necesarios para el formulario de edición
         $empleado = Empleado::findOrFail($id);
         $contrato = $empleado->contrato;
         return view('empleado.edit', compact('empleado', 'contrato'));
     }
     public function update(Request $request, $id)
     {
-
+        // Validación de los datos del empleado
         $empleado = Empleado::findOrFail($id);
         $data = $request->validate([
             'nombre' => 'required|string|max:50|regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/',
@@ -168,26 +165,34 @@ class EmpleadoController extends Controller
             'fecha_nacimiento.date' => 'La fecha de nacimiento debe ser una fecha válida.',
             'email.unique' => 'El correo electrónico ya está registrado.',
         ]);
+        try {
+            DB::beginTransaction();
+            $empleado->update($data);
 
-        $empleado->update($data);
-
-        return redirect()->route('empleado.index')->with('success', 'Empleado actualizado exitosamente.');
+            return redirect()->route('empleado.index')->with('success', 'Empleado actualizado exitosamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'Error al actualizar el empleado: ' . $e->getMessage()]);
+        }
     }
     public function destroy($id)
     {
+        // Eliminar el empleado y sus contratos asociados en cascada
         $empleado = Empleado::findOrFail($id);
         $empleado->contratos()->delete();
         $empleado->delete();
-
         return redirect()->route('empleado.index')->with('success', 'Empleado eliminado exitosamente.');
     }
     public function show($id)
     {
+        // Mostrar los detalles del empleado
         $empleado = Empleado::findOrFail($id);
         return view('empleado.show', compact('empleado'));
     }
     public function baja($id)
     {
+        // Función para dar de baja a un empleado
+        // Se busca el empleado por su ID y se cambia su estado a 'inactivo'
         $empleado = Empleado::findOrFail($id);
         $empleado->estado = 'inactivo';
         $empleado->save();

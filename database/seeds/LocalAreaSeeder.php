@@ -10,6 +10,7 @@ class LocalAreaSeeder extends Seeder
      *
      * @return void
      */
+    // Seeder para la tabla local_area
     public function run()
     {
         DB::table('local_area')->insert([

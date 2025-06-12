@@ -10,6 +10,7 @@ class CargosSeeder extends Seeder
      *
      * @return void
      */
+    // Seeder para la tabla cargos
     public function run()
     {
         DB::table('cargos')->insert([

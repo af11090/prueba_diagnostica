@@ -2,6 +2,7 @@
 @section('title', 'Editar Empleado')
 @section('content')
 <div class="container">
+    
     <h1>Editar Empleado</h1>
 
     <form action="{{ route('empleado.update', $empleado->id) }}" method="POST">

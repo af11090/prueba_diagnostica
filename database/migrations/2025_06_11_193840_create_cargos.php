@@ -13,6 +13,7 @@ class CreateCargos extends Migration
      */
     public function up()
     {
+        // Creación de la tala cargos
         Schema::create('cargos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 50)->unique();

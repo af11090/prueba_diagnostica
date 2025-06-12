@@ -10,6 +10,7 @@ class TiposContratoSeeder extends Seeder
      *
      * @return void
      */
+// Seeder para la tabla tipos_contrato
     public function run()
     {
           DB::table('tipos_contrato')->insert([

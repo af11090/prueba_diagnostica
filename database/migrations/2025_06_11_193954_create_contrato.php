@@ -13,6 +13,7 @@ class CreateContrato extends Migration
      */
     public function up()
     {
+        // Creación de la tabla contrato
         Schema::create('contrato', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_empleado')->constrained('empleados');
