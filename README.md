@@ -7,9 +7,7 @@ Sistema web para la gestión de empleados y recursos humanos desarrollado con La
 ## Características
 - Gestión de empleados (CRUD)
 - Filtrado por área, cargo y local
-- Reportes estadísticos
-- Diseño responsive
-
+  
 ## Requisitos técnicos
 - PHP 7.3
 - Laravel 7
